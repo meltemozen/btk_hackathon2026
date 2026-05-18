@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
@@ -11,7 +11,7 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/register", { username, password });
+      await api.post("/register", { username, password });
       navigate("/login");
     } catch (err) {
       setError("Kayıt başarısız. Bu kullanıcı adı alınmış olabilir.");
@@ -21,9 +21,9 @@ export default function Register() {
   return (
     <div className="glass-card" style={{ maxWidth: "400px", margin: "auto" }}>
       <h2>Yeni Hesap Oluştur</h2>
-      <p style={{ color: "#94a3b8", marginBottom: "2rem" }}>Finansal yolculuğunuza bugün başlayın.</p>
+      <p style={{ color: "#64748b", marginBottom: "2rem" }}>Finansal yolculuğunuza bugün başlayın.</p>
       
-      {error && <p style={{ color: "#f87171", fontSize: "0.875rem", marginBottom: "1rem" }}>{error}</p>}
+      {error && <p style={{ color: "#dc2626", fontSize: "0.875rem", marginBottom: "1rem" }}>{error}</p>}
 
       <form onSubmit={handleRegister}>
         <div className="input-group">

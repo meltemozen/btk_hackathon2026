@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Login({ onLogin }) {
@@ -15,7 +15,7 @@ export default function Login({ onLogin }) {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await axios.post("http://127.0.0.1:8000/token", formData);
+      const response = await api.post("/token", formData);
       localStorage.setItem("token", response.data.access_token);
       if (onLogin) onLogin();
       navigate("/dashboard");
@@ -27,9 +27,9 @@ export default function Login({ onLogin }) {
   return (
     <div className="glass-card" style={{ maxWidth: "400px", margin: "auto" }}>
       <h2>Hoş Geldiniz</h2>
-      <p style={{ color: "#94a3b8", marginBottom: "2rem" }}>Dijital İkizinize erişmek için giriş yapın.</p>
+      <p style={{ color: "#64748b", marginBottom: "2rem" }}>Dijital İkizinize erişmek için giriş yapın.</p>
 
-      {error && <p style={{ color: "#f87171", fontSize: "0.875rem", marginBottom: "1rem" }}>{error}</p>}
+      {error && <p style={{ color: "#dc2626", fontSize: "0.875rem", marginBottom: "1rem" }}>{error}</p>}
 
       <form onSubmit={handleLogin}>
         <div className="input-group">

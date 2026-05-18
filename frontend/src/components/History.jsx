@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 import Navbar from "./Navbar";
 import { Search, Filter, ArrowUpDown, Trash2 } from "lucide-react";
 
@@ -15,7 +15,7 @@ export default function History() {
 
   const fetchTransactions = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/transactions", {
+      const res = await api.get("/transactions", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTransactions(res.data);
@@ -27,7 +27,7 @@ export default function History() {
   const deleteTransaction = async (id) => {
     if (!window.confirm("Bu işlemi silmek istediğinize emin misiniz?")) return;
     try {
-      await axios.delete(`http://127.0.0.1:8000/transactions/${id}`, {
+      await api.delete(`/transactions/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchTransactions();
@@ -79,7 +79,7 @@ export default function History() {
           </div>
 
           <div className="transaction-list">
-            <div className="transaction-item" style={{ background: "rgba(255,255,255,0.05)", fontWeight: 700 }}>
+            <div className="transaction-item" style={{ background: "rgba(0, 0, 0, 0.03)", fontWeight: 700, borderRadius: "0.5rem" }}>
               <span style={{ flex: 2 }}>Açıklama / Tarih</span>
               <span style={{ flex: 1, textAlign: "center" }}>Kategori</span>
               <span style={{ flex: 1, textAlign: "right" }}>Miktar</span>
@@ -87,19 +87,19 @@ export default function History() {
             {filteredTransactions.map((t) => (
               <div key={t.id} className="transaction-item">
                 <div style={{ flex: 2 }}>
-                  <p style={{ fontWeight: 600 }}>{t.description}</p>
-                  <p style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{new Date(t.date).toLocaleDateString()}</p>
+                  <p style={{ fontWeight: 600, color: "#1e293b" }}>{t.description}</p>
+                  <p style={{ fontSize: "0.75rem", color: "#64748b" }}>{new Date(t.date).toLocaleDateString()}</p>
                 </div>
                 <div style={{ flex: 1, textAlign: "center" }}>
                   <span className={`badge ${t.amount > 0 ? "badge-income" : "badge-expense"}`}>{t.category}</span>
                 </div>
                 <div style={{ flex: 1, textAlign: "right", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
-                  <p style={{ fontWeight: 700, color: t.amount > 0 ? "#4ade80" : "#f87171" }}>
+                  <p style={{ fontWeight: 700, color: t.amount > 0 ? "#16a34a" : "#dc2626" }}>
                     {t.amount > 0 ? "+" : ""}{t.amount} TL
                   </p>
                   <button 
                     onClick={() => deleteTransaction(t.id)} 
-                    style={{ background: "transparent", border: "none", color: "#f87171", cursor: "pointer", padding: "5px", marginTop: 0 }}
+                    style={{ background: "transparent", border: "none", color: "#dc2626", cursor: "pointer", padding: "5px", marginTop: 0, boxShadow: "none" }}
                     title="Sil"
                   >
                     <Trash2 size={16} />

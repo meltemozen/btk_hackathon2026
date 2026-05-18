@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import History from "./components/History";
+import Profile from "./components/Profile";
 import "./index.css";
 
 function App() {
@@ -25,6 +27,14 @@ function App() {
         <Route
           path="/dashboard"
           element={token ? <Dashboard /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/history"
+          element={token ? <History /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={token ? <Profile /> : <Navigate to="/login" />}
         />
         <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>

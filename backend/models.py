@@ -23,6 +23,11 @@ class UserCreate(SQLModel):
     username: str
     password: str
 
+class UserUpdate(SQLModel):
+    username: Optional[str] = None
+    new_password: Optional[str] = None
+    current_password: Optional[str] = None
+
 class TransactionCreate(SQLModel):
     description: str
     amount: float

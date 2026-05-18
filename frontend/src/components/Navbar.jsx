@@ -39,9 +39,10 @@ export default function Navbar() {
           justify-content: space-between;
           align-items: center;
           padding: 1rem 2rem;
-          background: rgba(30, 41, 59, 0.8);
-          backdrop-filter: blur(10px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
           position: sticky;
           top: 0;
           z-index: 1000;
@@ -50,7 +51,7 @@ export default function Navbar() {
         .nav-logo a {
           font-size: 1.5rem;
           font-weight: 800;
-          background: linear-gradient(to right, #818cf8, #c084fc);
+          background: linear-gradient(to right, #6366f1, #a855f7);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           text-decoration: none;
@@ -64,14 +65,14 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           gap: 8px;
-          color: #94a3b8;
+          color: #475569;
           text-decoration: none;
-          font-size: 0.9rem;
-          font-weight: 500;
+          font-size: 0.95rem;
+          font-weight: 600;
           transition: all 0.2s;
         }
         .nav-item:hover {
-          color: #818cf8;
+          color: #6366f1;
         }
         .nav-logout {
           display: flex;
@@ -79,16 +80,20 @@ export default function Navbar() {
           gap: 8px;
           background: transparent;
           border: 1px solid rgba(239, 68, 68, 0.3);
-          color: #f87171;
+          color: #dc2626;
           padding: 0.5rem 1rem;
-          border-radius: 0.5rem;
+          border-radius: 0.75rem;
           cursor: pointer;
           font-size: 0.85rem;
+          font-weight: 600;
           margin-top: 0 !important;
           width: auto !important;
+          box-shadow: none !important;
         }
         .nav-logout:hover {
           background: rgba(239, 68, 68, 0.1);
+          transform: none !important;
+          box-shadow: none !important;
         }
       `}</style>
     </nav>

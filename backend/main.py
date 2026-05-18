@@ -9,7 +9,7 @@ from jose import JWTError, jwt
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-from models import User, Transaction, UserCreate, TransactionCreate, Token
+from models import User, Transaction, UserCreate, TransactionCreate, Token, UserUpdate
 from auth import verify_password, get_password_hash, create_access_token, SECRET_KEY, ALGORITHM
 
 load_dotenv()
@@ -70,6 +70,40 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
 @app.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):
     return {"username": current_user.username}
+
+@app.put("/me")
+def update_me(
+    update_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    token_updated = False
+    new_username = current_user.username
+
+    if update_data.username and update_data.username != current_user.username:
+        existing = session.exec(select(User).where(User.username == update_data.username)).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Kullanıcı adı zaten kullanımda.")
+        current_user.username = update_data.username
+        new_username = update_data.username
+        token_updated = True
+
+    if update_data.new_password:
+        if not update_data.current_password or not verify_password(update_data.current_password, current_user.hashed_password):
+            raise HTTPException(status_code=400, detail="Mevcut şifre yanlış.")
+        current_user.hashed_password = get_password_hash(update_data.new_password)
+
+    session.add(current_user)
+    session.commit()
+    session.refresh(current_user)
+
+    access_token = create_access_token(data={"sub": new_username}) if token_updated else None
+
+    return {
+        "username": current_user.username,
+        "message": "Profil başarıyla güncellendi.",
+        "access_token": access_token
+    }
 
 @app.get("/")
 def home():
