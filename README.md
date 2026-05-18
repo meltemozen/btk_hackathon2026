@@ -2,7 +2,7 @@
 
 # 🚀 FinTwin AI — Yapay Zeka Destekli Dijital Finansal İkiz ve Açık Bankacılık Platformu
 
-**FinTwin AI**, kullanıcıların finansal verilerini, gelir-gider alışkanlıklarını ve bütçe dengesini analiz ederek onlara yapay zeka destekli bir **"Dijital Finansal İkiz (Persona)"** çıkaran, oyunlaştırılmış ve TCMB Açık Bankacılık standartlarına uyumlu kişisel finansal yönetim platformudur.
+**FinTwin AI**, kullanıcıların harcama ve gelir alışkanlıklarını analiz ederek onların **"Dijital Finansal İkizini" (Financial Twin)** oluşturan, harcama duygu durumunu saptayan ve yapay zeka destekli kişiselleştirilmiş finansal mentorluk sunan yeni nesil bir otonom finansal yönetim platformudur.
 
 ---
 
