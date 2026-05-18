@@ -678,7 +678,7 @@ export default function Dashboard() {
           {/* Rozetler */}
           <div className="glass-card">
             <h3 style={{ display: "flex", alignItems: "center", gap: "10px", color: "#eab308" }}>
-              <Trophy size={20} /> Oyunlaştırma & Başarı Rozetleri
+              <Trophy size={20} /> Başarı Rozetleri
             </h3>
             <p className="text-muted" style={{ fontSize: "0.875rem", marginBottom: "1.5rem" }}>
               Finansal disiplininizi korudukça yeni unvanların ve rozetlerin kilidini açın.
