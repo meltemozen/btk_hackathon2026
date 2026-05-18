@@ -23,11 +23,9 @@ export default function Dashboard() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // What-if state
   const [simCategory, setSimCategory] = useState("Gıda");
   const [simPercent, setSimPercent] = useState(25);
 
-  // Goals & Badges state
   const [goals, setGoals] = useState([]);
   const [newGoalName, setNewGoalName] = useState("");
   const [newGoalTarget, setNewGoalTarget] = useState("");
@@ -35,7 +33,6 @@ export default function Dashboard() {
   const [addMoneyAmount, setAddMoneyAmount] = useState("");
   const [badges, setBadges] = useState([]);
 
-  // Open Banking sync state
   const [showBankModal, setShowBankModal] = useState(false);
   const [selectedBank, setSelectedBank] = useState("Akbank");
   const [syncingBank, setSyncingBank] = useState(false);
@@ -214,10 +211,9 @@ export default function Dashboard() {
     if (!analysis) return;
 
     const doc = new jsPDF("p", "mm", "a4");
-    const pageWidth = doc.internal.pageSize.width; // 210
-    const pageHeight = doc.internal.pageSize.height; // 297
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
 
-    // Türkçe karakter düzeltici helper
     const tr = (str) => {
       if (!str) return "";
       return String(str)
@@ -231,8 +227,7 @@ export default function Dashboard() {
 
     let y = 0;
 
-    // Üst Banner (Header)
-    doc.setFillColor(99, 102, 241); // Primary indigo
+    doc.setFillColor(99, 102, 241);
     doc.rect(0, 0, pageWidth, 32, "F");
 
     doc.setTextColor(255, 255, 255);
@@ -246,7 +241,6 @@ export default function Dashboard() {
 
     y = 42;
 
-    // Persona & Mood Bilgisi
     doc.setTextColor(15, 23, 42);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
@@ -254,12 +248,11 @@ export default function Dashboard() {
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "italic");
-    doc.setTextColor(147, 51, 234); // Mor duygu rengi
+    doc.setTextColor(147, 51, 234);
     doc.text(tr(analysis.twin_mood || "Analiz Tamamlandi"), 15, y + 7);
 
     y += 18;
 
-    // KPI Özet Kartları
     const boxWidth = (pageWidth - 30 - 15) / 4;
     const boxHeight = 22;
 
@@ -288,7 +281,6 @@ export default function Dashboard() {
 
     y += 32;
 
-    // AI İçgörüleri
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(15, 23, 42);
@@ -312,7 +304,6 @@ export default function Dashboard() {
     y += 8;
     if (y > pageHeight - 40) { doc.addPage(); y = 20; }
 
-    // Aksiyon Planı
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(15, 23, 42);
@@ -336,7 +327,6 @@ export default function Dashboard() {
     y += 10;
     if (y > pageHeight - 40) { doc.addPage(); y = 20; }
 
-    // Gelecek Tahmini Kutusu
     doc.setFillColor(239, 246, 255);
     doc.setDrawColor(191, 219, 254);
     doc.roundedRect(15, y, pageWidth - 30, 24, 3, 3, "FD");
@@ -354,7 +344,6 @@ export default function Dashboard() {
     y += 34;
     if (y > pageHeight - 60) { doc.addPage(); y = 20; }
 
-    // Kategori Dağılımı Tablosu
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(15, 23, 42);
@@ -376,7 +365,6 @@ export default function Dashboard() {
     y = doc.lastAutoTable.finalY + 16;
     if (y > pageHeight - 60) { doc.addPage(); y = 20; }
 
-    // Son İşlemler Tablosu
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(15, 23, 42);
@@ -400,7 +388,6 @@ export default function Dashboard() {
       margin: { left: 15, right: 15 }
     });
 
-    // Sayfa Alt Bilgisi (Footer)
     const pageCount = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -437,7 +424,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Ana Kartlar */}
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", marginBottom: "2rem" }}>
           <div className="stats-card">
             <p className="text-muted">Toplam Gelir</p>
@@ -464,7 +450,6 @@ export default function Dashboard() {
         </div>
 
         <div className="grid-2">
-          {/* İşlem Ekleme (PDF'de Gizli) */}
           <div className="glass-card no-pdf">
             <h3><PlusCircle size={20} /> Yeni İşlem</h3>
             <form onSubmit={addTransaction}>
@@ -488,7 +473,6 @@ export default function Dashboard() {
             </form>
           </div>
 
-          {/* AI Analiz Bölümü */}
           <div className="glass-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "10px" }}>
               <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
@@ -542,7 +526,6 @@ export default function Dashboard() {
         </div>
 
         <div className="grid-3 ">
-          {/* Grafik Bölümü */}
           <div className="glass-card">
             <h3><PieIcon size={20} /> Kategori Dağılımı</h3>
             <div style={{ height: "300px" }}>
@@ -569,7 +552,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* What-if Simülatörü */}
           <div className="glass-card">
             <h3><TrendingUp size={20} /> What-If Simülatörü</h3>
             <div className="input-group">
@@ -593,7 +575,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Son İşlemler */}
         <div className="glass-card" style={{ marginTop: "2rem" }}>
           <h3><Wallet size={10} /> Son İşlemler</h3>
           <div className="transaction-list">
@@ -623,9 +604,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Akıllı Birikim Kumbara ve Hedefleri & Oyunlaştırma Rozetleri */}
         <div className="grid-2">
-          {/* Hedefler */}
           <div className="glass-card">
             <h3 style={{ display: "flex", alignItems: "center", gap: "10px", color: "#6366f1" }}>
               <Target size={20} /> Akıllı Birikim Hedefleri
@@ -709,7 +688,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Rozetler */}
           <div className="glass-card">
             <h3 style={{ display: "flex", alignItems: "center", gap: "10px", color: "#eab308" }}>
               <Trophy size={20} /> Başarı Rozetleri
@@ -763,7 +741,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Açık Bankacılık Banka Bağlama Modalı */}
         {showBankModal && (
           <div className="modal-overlay" style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: "1rem" }}>
             <div className="glass-card modal-content" style={{ maxWidth: "500px", width: "100%", background: "#fff", padding: "2rem", borderRadius: "1.5rem", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>

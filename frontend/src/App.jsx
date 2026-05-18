@@ -11,7 +11,6 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-    // LocalStorage değişikliklerini dinlemek için (isteğe bağlı ama güvenli)
     const handleStorageChange = () => {
       setToken(localStorage.getItem("token"));
     };

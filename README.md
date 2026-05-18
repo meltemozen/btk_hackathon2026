@@ -2,12 +2,6 @@
 
 # 🚀 FinTwin AI — Yapay Zeka Destekli Dijital Finansal İkiz ve Açık Bankacılık Platformu
 
-[![BTK Hackathon 2026](https://img.shields.io/badge/BTK_Hackathon-2026-6366f1?style=for-the-badge&logo=codeigniter)](https://github.com/)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI_0.110-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/Frontend-React_18_%2B_Vite-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
-[![Gemini AI](https://img.shields.io/badge/AI_Engine-Google_Gemini_Flash-8A2BE2?style=for-the-badge&logo=google)](https://ai.google.dev)
-[![Docker](https://img.shields.io/badge/Deployment-Docker_Compose-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com)
-
 **FinTwin AI**, kullanıcıların finansal verilerini, gelir-gider alışkanlıklarını ve bütçe dengesini analiz ederek onlara yapay zeka destekli bir **"Dijital Finansal İkiz (Persona)"** çıkaran, oyunlaştırılmış ve TCMB Açık Bankacılık standartlarına uyumlu kişisel finansal yönetim platformudur.
 
 ---
@@ -84,7 +78,7 @@ docker compose down
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # (Windows için: venv\Scripts\activate)
+source venv/bin/activate  
 pip install -r requirements.txt
 ```
 Backend dizininde bir `.env` dosyası oluşturun ve Gemini API anahtarınızı ekleyin:

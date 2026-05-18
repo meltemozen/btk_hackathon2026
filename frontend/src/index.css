@@ -120,7 +120,6 @@ button.secondary:hover {
   background: rgba(99, 102, 241, 0.08);
 }
 
-/* Inline / Flex Buttons */
 button.btn-inline {
   width: auto;
   margin-top: 0;

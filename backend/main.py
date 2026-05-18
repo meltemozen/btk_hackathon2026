@@ -14,15 +14,12 @@ from auth import verify_password, get_password_hash, create_access_token, SECRET
 
 load_dotenv()
 
-# Gemini Config
-# Gemini Config
 api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key.strip())
 
 model = genai.GenerativeModel('models/gemini-flash-latest')
 
-# Database Config
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fintwin.db")
 engine = create_engine(DATABASE_URL)
 
@@ -177,7 +174,6 @@ async def analyze_twin(current_user: User = Depends(get_current_user)):
     if not transactions:
         return {"error": "Henüz işlem verisi yok. Lütfen harcama girin."}
 
-    # Temel Hesaplamalar
     total_income = sum(t.amount for t in transactions if t.amount > 0)
     total_expense = abs(sum(t.amount for t in transactions if t.amount < 0))
     
@@ -185,7 +181,6 @@ async def analyze_twin(current_user: User = Depends(get_current_user)):
     confidence_score = 100 - risk_score
     future_balance_3_months = int(total_income - (total_expense * 3))
 
-    # Kategori Özeti
     category_map = {}
     for t in transactions:
         if t.amount < 0:
@@ -194,7 +189,6 @@ async def analyze_twin(current_user: User = Depends(get_current_user)):
     
     category_summary = [{"name": k, "value": v} for k, v in category_map.items()]
 
-    # Gemini Prompt
     data_str = "\n".join([f"{t.date.date()} | {t.category} | {t.amount} TL | {t.description}" for t in transactions])
     
     prompt = f"""
@@ -250,14 +244,11 @@ async def analyze_twin(current_user: User = Depends(get_current_user)):
         **ai_data
     }
 
-# --- HEDEF KUMBARASI (GOALS / WISHLIST) ---
-
 @app.get("/goals")
 def get_goals(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     statement = select(Goal).where(Goal.user_id == current_user.id)
     goals = session.exec(statement).all()
     
-    # Kullanıcının aylık net tasarrufunu hesapla
     tx_stmt = select(Transaction).where(Transaction.user_id == current_user.id)
     txs = session.exec(tx_stmt).all()
     
@@ -325,8 +316,6 @@ def delete_goal(goal_id: int, current_user: User = Depends(get_current_user), se
     session.commit()
     return {"message": "Hedef başarıyla silindi."}
 
-# --- OYUNLAŞTIRMA VE ROZETLER (GAMIFICATION BADGES) ---
-
 @app.get("/badges", response_model=List[Badge])
 def get_user_badges(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     tx_stmt = select(Transaction).where(Transaction.user_id == current_user.id)
@@ -384,8 +373,6 @@ def get_user_badges(current_user: User = Depends(get_current_user), session: Ses
         )
     ]
     return badges
-
-# --- AÇIK BANKACILIK SİMÜLASYONU (OPEN BANKING CONNECT) ---
 
 @app.post("/openbanking/sync")
 def openbanking_sync(sync_in: OpenBankingSync, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
