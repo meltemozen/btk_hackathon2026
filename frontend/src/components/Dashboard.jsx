@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../api";
 import {
-  PlusCircle, BrainCircuit, TrendingUp, Wallet,
+  PlusCircle, BrainCircuit, TrendingUp, Wallet, Target, Trophy, Sparkles, CheckCircle2, Plus,
   Download, PieChart as PieIcon, Zap, AlertTriangle, ShieldCheck, Trash2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -27,14 +27,49 @@ export default function Dashboard() {
   const [simCategory, setSimCategory] = useState("Gıda");
   const [simPercent, setSimPercent] = useState(25);
 
+  // Goals & Badges state
+  const [goals, setGoals] = useState([]);
+  const [newGoalName, setNewGoalName] = useState("");
+  const [newGoalTarget, setNewGoalTarget] = useState("");
+  const [addingMoneyId, setAddingMoneyId] = useState(null);
+  const [addMoneyAmount, setAddMoneyAmount] = useState("");
+  const [badges, setBadges] = useState([]);
+
   const dashboardRef = useRef();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) navigate("/login");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     fetchTransactions();
+    fetchGoals();
+    fetchBadges();
   }, [token]);
+
+  const fetchGoals = async () => {
+    try {
+      const res = await api.get("/goals", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setGoals(res.data);
+    } catch (err) {
+      console.error("Goals fetch hatası", err);
+    }
+  };
+
+  const fetchBadges = async () => {
+    try {
+      const res = await api.get("/badges", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setBadges(res.data);
+    } catch (err) {
+      console.error("Badges fetch hatası", err);
+    }
+  };
 
   const fetchTransactions = async () => {
     try {
@@ -64,6 +99,8 @@ export default function Dashboard() {
       setAmount("");
       setDesc("");
       fetchTransactions();
+      fetchGoals();
+      fetchBadges();
     } catch (err) {
       alert("İşlem eklenemedi.");
     }
@@ -76,8 +113,59 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchTransactions();
+      fetchGoals();
+      fetchBadges();
     } catch (err) {
       alert("İşlem silinemedi.");
+    }
+  };
+
+  const handleCreateGoal = async (e) => {
+    e.preventDefault();
+    if (!newGoalName || !newGoalTarget) return;
+    try {
+      await api.post("/goals", {
+        name: newGoalName,
+        target_amount: parseFloat(newGoalTarget)
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNewGoalName("");
+      setNewGoalTarget("");
+      fetchGoals();
+      fetchBadges();
+    } catch (err) {
+      alert("Hedef oluşturulamadı.");
+    }
+  };
+
+  const handleAddMoney = async (goalId) => {
+    if (!addMoneyAmount) return;
+    try {
+      await api.post(`/goals/${goalId}/add`, {
+        amount: parseFloat(addMoneyAmount)
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAddMoneyAmount("");
+      setAddingMoneyId(null);
+      fetchGoals();
+      fetchBadges();
+    } catch (err) {
+      alert("Para eklenemedi.");
+    }
+  };
+
+  const handleDeleteGoal = async (goalId) => {
+    if (!window.confirm("Bu hedefi silmek istediğinize emin misiniz?")) return;
+    try {
+      await api.delete(`/goals/${goalId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchGoals();
+      fetchBadges();
+    } catch (err) {
+      alert("Hedef silinemedi.");
     }
   };
 
@@ -350,13 +438,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        <div className="grid-2">
           {/* İşlem Ekleme (PDF'de Gizli) */}
           <div className="glass-card no-pdf">
             <h3><PlusCircle size={20} /> Yeni İşlem</h3>
             <form onSubmit={addTransaction}>
               <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Açıklama" required />
-              <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="grid-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
                 <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Miktar" required />
               </div>
@@ -419,7 +507,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid" style={{ gridTemplateColumns: "2fr 1fr" }}>
+        <div className="grid-3 ">
           {/* Grafik Bölümü */}
           <div className="glass-card">
             <h3><PieIcon size={20} /> Kategori Dağılımı</h3>
@@ -472,7 +560,7 @@ export default function Dashboard() {
         </div>
 
         {/* Son İşlemler */}
-        <div className="glass-card">
+        <div className="glass-card" style={{ marginTop: "2rem" }}>
           <h3><Wallet size={20} /> Son İşlemler</h3>
           <div className="transaction-list">
             {transactions.slice().reverse().slice(0, 10).map((t) => (
@@ -490,7 +578,7 @@ export default function Dashboard() {
                   </div>
                   <button
                     onClick={() => deleteTransaction(t.id)}
-                    style={{ background: "transparent", border: "none", color: "#dc2626", cursor: "pointer", padding: "5px", marginTop: 0, boxShadow: "none" }}
+                    style={{ background: "transparent", border: "none", color: "#dc2626", cursor: "pointer", padding: "5px", marginTop: 0, boxShadow: "none", width: "auto" }}
                     title="Sil"
                   >
                     <Trash2 size={16} />
@@ -498,6 +586,146 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Akıllı Birikim Kumbara ve Hedefleri & Oyunlaştırma Rozetleri */}
+        <div className="grid-2">
+          {/* Hedefler */}
+          <div className="glass-card">
+            <h3 style={{ display: "flex", alignItems: "center", gap: "10px", color: "#6366f1" }}>
+              <Target size={20} /> Akıllı Birikim Hedefleri
+            </h3>
+
+            <form onSubmit={handleCreateGoal} style={{ display: "flex", gap: "12px", marginBottom: "2rem", alignItems: "center" }}>
+              <input
+                type="text"
+                value={newGoalName}
+                onChange={(e) => setNewGoalName(e.target.value)}
+                placeholder="Hedef Adı (Örn: MacBook Pro)"
+                style={{ flex: 2, padding: "0.85rem 1rem", fontSize: "1rem" }}
+                required
+              />
+              <input
+                type="number"
+                value={newGoalTarget}
+                onChange={(e) => setNewGoalTarget(e.target.value)}
+                placeholder="Tutar (TL)"
+                style={{ flex: 1, padding: "0.85rem 1rem", fontSize: "1rem" }}
+                required
+              />
+              <button type="submit" className="btn-inline" style={{ padding: "0.85rem 1.25rem", background: "#6366f1", color: "#fff" }}><Plus size={20} /></button>
+            </form>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              {goals.length === 0 ? (
+                <p className="text-muted" style={{ textAlign: "center", fontSize: "0.875rem" }}>Henüz bir hedef oluşturmadınız.</p>
+              ) : (
+                goals.map((g) => {
+                  const percent = Math.min(Math.round((g.current_amount / g.target_amount) * 100), 100);
+                  return (
+                    <div key={g.id} style={{ padding: "1.25rem", background: "rgba(0,0,0,0.02)", borderRadius: "0.75rem", border: "1px solid rgba(0,0,0,0.05)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                        <strong style={{ fontSize: "1.05rem", color: "#1e293b" }}>{g.name}</strong>
+                        <span style={{ fontSize: "0.95rem", fontWeight: "bold", color: percent === 100 ? "#16a34a" : "#6366f1" }}>
+                          {g.current_amount} / {g.target_amount} TL (%{percent})
+                        </span>
+                      </div>
+
+                      <div className="progress-bar" style={{ height: "10px", marginBottom: "1rem" }}>
+                        <div className="progress-fill" style={{ width: `${percent}%`, background: percent === 100 ? "#16a34a" : "linear-gradient(90deg, #6366f1, #a855f7)" }}></div>
+                      </div>
+
+                      {g.ai_suggestion && (
+                        <p style={{ fontSize: "0.85rem", color: "#64748b", display: "flex", alignItems: "center", gap: "8px", marginBottom: "1rem", background: "rgba(99,102,241,0.08)", padding: "0.75rem", borderRadius: "0.5rem" }}>
+                          <Sparkles size={16} style={{ color: "#8b5cf6", flexShrink: 0 }} /> {g.ai_suggestion}
+                        </p>
+                      )}
+
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        {addingMoneyId === g.id ? (
+                          <div className="add-money-box" style={{ display: "flex", gap: "10px", width: "100%", alignItems: "center" }}>
+                            <input
+                              type="number"
+                              value={addMoneyAmount}
+                              onChange={(e) => setAddMoneyAmount(e.target.value)}
+                              placeholder="Miktar (TL)"
+                              style={{ padding: "0.75rem 1rem", fontSize: "0.95rem", flex: 1 }}
+                            />
+                            <button className="btn-small" onClick={() => handleAddMoney(g.id)} style={{ background: "#16a34a", padding: "0.75rem 1.25rem", color: "#fff" }}>Ekle</button>
+                            <button className="btn-small" onClick={() => { setAddingMoneyId(null); setAddMoneyAmount(""); }} style={{ background: "#64748b", padding: "0.75rem 1.25rem", color: "#fff" }}>İptal</button>
+                          </div>
+                        ) : (
+                          <>
+                            {percent < 100 && (
+                              <button className="btn-small" onClick={() => setAddingMoneyId(g.id)} style={{ padding: "0.6rem 1.25rem", fontSize: "0.85rem", background: "rgba(99,102,241,0.1)", color: "#6366f1", border: "1px solid #6366f1" }}>
+                                + Birikim Ekle
+                              </button>
+                            )}
+                            <button className="btn-small" onClick={() => handleDeleteGoal(g.id)} style={{ padding: "0.5rem", background: "transparent", color: "#dc2626", border: "none", boxShadow: "none", marginLeft: percent < 100 ? "auto" : 0 }} title="Sil">
+                              <Trash2 size={18} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Rozetler */}
+          <div className="glass-card">
+            <h3 style={{ display: "flex", alignItems: "center", gap: "10px", color: "#eab308" }}>
+              <Trophy size={20} /> Oyunlaştırma & Başarı Rozetleri
+            </h3>
+            <p className="text-muted" style={{ fontSize: "0.875rem", marginBottom: "1.5rem" }}>
+              Finansal disiplininizi korudukça yeni unvanların ve rozetlerin kilidini açın.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {badges.map((b) => (
+                <div
+                  key={b.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    padding: "1rem",
+                    background: b.earned ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.02)",
+                    borderRadius: "0.75rem",
+                    border: b.earned ? `2px solid ${b.color}` : "1px dashed rgba(0,0,0,0.1)",
+                    opacity: b.earned ? 1 : 0.6,
+                    boxShadow: b.earned ? `0 4px 12px rgba(0,0,0,0.05)` : "none"
+                  }}
+                >
+                  <div style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    background: b.earned ? `${b.color}20` : "#e2e8f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.5rem",
+                    flexShrink: 0
+                  }}>
+                    {b.name.split(" ")[0]}
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <strong style={{ color: b.earned ? "#1e293b" : "#64748b", fontSize: "1rem" }}>{b.name.split(" ").slice(1).join(" ")}</strong>
+                      {b.earned && <CheckCircle2 size={16} style={{ color: b.color }} />}
+                    </div>
+                    <p style={{ fontSize: "0.8rem", color: b.earned ? "#475569" : "#94a3b8", marginTop: "0.25rem" }}>
+                      {b.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -95,6 +95,24 @@ export default function Navbar() {
           transform: none !important;
           box-shadow: none !important;
         }
+        @media (max-width: 768px) {
+          .navbar {
+            padding: 0.75rem 1rem;
+            flex-direction: column;
+            gap: 0.75rem;
+          }
+          .nav-links {
+            width: 100%;
+            justify-content: space-around;
+            gap: 0.5rem;
+          }
+          .nav-item span, .nav-logout span {
+            display: none;
+          }
+          .nav-item, .nav-logout {
+            padding: 0.5rem;
+          }
+        }
       `}</style>
     </nav>
   );

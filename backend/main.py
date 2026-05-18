@@ -9,7 +9,7 @@ from jose import JWTError, jwt
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-from models import User, Transaction, UserCreate, TransactionCreate, Token, UserUpdate
+from models import User, Transaction, Goal, UserCreate, TransactionCreate, GoalCreate, GoalAddMoney, Badge, Token, UserUpdate
 from auth import verify_password, get_password_hash, create_access_token, SECRET_KEY, ALGORITHM
 
 load_dotenv()
@@ -249,3 +249,138 @@ async def analyze_twin(current_user: User = Depends(get_current_user)):
         "categories": category_summary,
         **ai_data
     }
+
+# --- HEDEF KUMBARASI (GOALS / WISHLIST) ---
+
+@app.get("/goals")
+def get_goals(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    statement = select(Goal).where(Goal.user_id == current_user.id)
+    goals = session.exec(statement).all()
+    
+    # Kullanıcının aylık net tasarrufunu hesapla
+    tx_stmt = select(Transaction).where(Transaction.user_id == current_user.id)
+    txs = session.exec(tx_stmt).all()
+    
+    total_income = sum(t.amount for t in txs if t.amount > 0)
+    total_expense = sum(abs(t.amount) for t in txs if t.amount < 0)
+    net_savings = total_income - total_expense
+    
+    result = []
+    for g in goals:
+        remaining = g.target_amount - g.current_amount
+        ai_suggestion = ""
+        if remaining > 0:
+            if net_savings > 0:
+                months = round(remaining / net_savings, 1)
+                ai_suggestion = f"Mevcut harcama hızınızla bu hedefe yaklaşık {months} ayda ulaşabilirsiniz."
+            else:
+                ai_suggestion = f"Hedefe ulaşmak için aylık giderlerinizi (özellikle Alışveriş veya Gıda) düşürmelisiniz."
+        else:
+            ai_suggestion = "🎉 Tebrikler! Hedefinize ulaştınız."
+            
+        result.append({
+            "id": g.id,
+            "name": g.name,
+            "target_amount": g.target_amount,
+            "current_amount": g.current_amount,
+            "created_at": g.created_at,
+            "ai_suggestion": ai_suggestion
+        })
+        
+    return result
+
+@app.post("/goals")
+def create_goal(goal_in: GoalCreate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    new_goal = Goal(
+        name=goal_in.name,
+        target_amount=goal_in.target_amount,
+        user_id=current_user.id
+    )
+    session.add(new_goal)
+    session.commit()
+    session.refresh(new_goal)
+    return new_goal
+
+@app.post("/goals/{goal_id}/add")
+def add_money_to_goal(goal_id: int, money_in: GoalAddMoney, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == current_user.id)
+    goal = session.exec(statement).first()
+    if not goal:
+        raise HTTPException(status_code=404, detail="Hedef bulunamadı.")
+        
+    goal.current_amount += money_in.amount
+    session.add(goal)
+    session.commit()
+    session.refresh(goal)
+    return goal
+
+@app.delete("/goals/{goal_id}")
+def delete_goal(goal_id: int, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    statement = select(Goal).where(Goal.id == goal_id, Goal.user_id == current_user.id)
+    goal = session.exec(statement).first()
+    if not goal:
+        raise HTTPException(status_code=404, detail="Hedef bulunamadı.")
+        
+    session.delete(goal)
+    session.commit()
+    return {"message": "Hedef başarıyla silindi."}
+
+# --- OYUNLAŞTIRMA VE ROZETLER (GAMIFICATION BADGES) ---
+
+@app.get("/badges", response_model=List[Badge])
+def get_user_badges(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    tx_stmt = select(Transaction).where(Transaction.user_id == current_user.id)
+    txs = session.exec(tx_stmt).all()
+    
+    goal_stmt = select(Goal).where(Goal.user_id == current_user.id)
+    goals = session.exec(goal_stmt).all()
+    
+    total_inc = sum(t.amount for t in txs if t.amount > 0)
+    total_exp = sum(abs(t.amount) for t in txs if t.amount < 0)
+    net_bal = total_inc - total_exp
+    
+    shopping_exp = sum(abs(t.amount) for t in txs if t.amount < 0 and t.category.lower() in ["alışveriş", "alisveris", "shopping"])
+    
+    badges = [
+        Badge(
+            id="tasarruf_sovalyesi",
+            name="🛡️ Tasarruf Şövalyesi",
+            description="Toplam geliriniz toplam giderinizden yüksek. Bütçenizi kontrol altında tutuyorsunuz!",
+            icon="ShieldCheck",
+            earned=bool(len(txs) > 0 and total_inc > total_exp),
+            color="#22c55e" if bool(len(txs) > 0 and total_inc > total_exp) else "#94a3b8"
+        ),
+        Badge(
+            id="durtu_avcisi",
+            name="⚡ Dürtü Avcısı",
+            description="Alışveriş harcamalarınız toplam harcamalarınızın %25'inin altında. Harika otokontrol!",
+            icon="Zap",
+            earned=bool(len(txs) > 0 and total_exp > 0 and (shopping_exp / total_exp) < 0.25),
+            color="#eab308" if bool(len(txs) > 0 and total_exp > 0 and (shopping_exp / total_exp) < 0.25) else "#94a3b8"
+        ),
+        Badge(
+            id="sifir_borc",
+            name="🌟 Sıfır Borç Kulübü",
+            description="Net bakiyeniz sıfırın üzerinde. Geleceğe güvenle bakıyorsunuz!",
+            icon="TrendingUp",
+            earned=bool(net_bal > 0),
+            color="#3b82f6" if bool(net_bal > 0) else "#94a3b8"
+        ),
+        Badge(
+            id="hedef_uzmani",
+            name="🎯 Hedef Uzmanı",
+            description="En az 1 aktif birikim hedefi oluşturdunuz. Geleceğinizi planlıyorsunuz!",
+            icon="Target",
+            earned=bool(len(goals) > 0),
+            color="#a855f7" if bool(len(goals) > 0) else "#94a3b8"
+        ),
+        Badge(
+            id="fintwin_master",
+            name="👑 FinTwin Master",
+            description="5'ten fazla işlem kaydettiniz ve yapay zeka ikizinizi beslediniz!",
+            icon="BrainCircuit",
+            earned=bool(len(txs) >= 5),
+            color="#ec4899" if bool(len(txs) >= 5) else "#94a3b8"
+        )
+    ]
+    return badges
