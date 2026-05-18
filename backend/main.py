@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -9,7 +9,7 @@ from jose import JWTError, jwt
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-from models import User, Transaction, Goal, UserCreate, TransactionCreate, GoalCreate, GoalAddMoney, Badge, Token, UserUpdate
+from models import User, Transaction, Goal, UserCreate, TransactionCreate, GoalCreate, GoalAddMoney, Badge, Token, UserUpdate, OpenBankingSync
 from auth import verify_password, get_password_hash, create_access_token, SECRET_KEY, ALGORITHM
 
 load_dotenv()
@@ -384,3 +384,35 @@ def get_user_badges(current_user: User = Depends(get_current_user), session: Ses
         )
     ]
     return badges
+
+# --- AÇIK BANKACILIK SİMÜLASYONU (OPEN BANKING CONNECT) ---
+
+@app.post("/openbanking/sync")
+def openbanking_sync(sync_in: OpenBankingSync, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+    now = datetime.utcnow()
+    mock_txs = [
+        ("Maaş Ödemesi (BKM Senkronizasyon)", 45000.0, "Gelir", now - timedelta(days=5)),
+        ("Migros Kurumsal", -1450.0, "Gıda", now - timedelta(days=4)),
+        ("Starbucks Kafe", -220.0, "Kafe", now - timedelta(days=3)),
+        ("Shell Akaryakıt", -1600.0, "Ulaşım", now - timedelta(days=2)),
+        ("Netflix Üyelik", -279.0, "Abonelik", now - timedelta(days=2)),
+        ("Zara / Inditex", -2450.0, "Alışveriş", now - timedelta(days=1)),
+        ("Trendyol Pazaryeri", -850.0, "Alışveriş", now - timedelta(hours=12)),
+        ("Elektrik Dağıtım A.Ş.", -740.0, "Konut", now - timedelta(hours=6)),
+    ]
+    
+    for desc, amt, cat, dt in mock_txs:
+        t = Transaction(
+            description=f"[{sync_in.bank_name}] {desc}",
+            amount=amt,
+            category=cat,
+            date=dt,
+            user_id=current_user.id
+        )
+        session.add(t)
+        
+    session.commit()
+    return {
+        "message": f"{sync_in.bank_name} hesabınızdan 8 adet güncel işlem başarıyla senkronize edildi!",
+        "count": len(mock_txs)
+    }

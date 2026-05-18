@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import api from "../api";
 import {
   PlusCircle, BrainCircuit, TrendingUp, Wallet, Target, Trophy, Sparkles, CheckCircle2, Plus,
-  Download, PieChart as PieIcon, Zap, AlertTriangle, ShieldCheck, Trash2
+  Download, PieChart as PieIcon, Zap, AlertTriangle, ShieldCheck, Trash2, Building2, RefreshCw
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -34,6 +34,33 @@ export default function Dashboard() {
   const [addingMoneyId, setAddingMoneyId] = useState(null);
   const [addMoneyAmount, setAddMoneyAmount] = useState("");
   const [badges, setBadges] = useState([]);
+
+  // Open Banking sync state
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [selectedBank, setSelectedBank] = useState("Akbank");
+  const [syncingBank, setSyncingBank] = useState(false);
+  const [bankSyncMessage, setBankSyncMessage] = useState("");
+
+  const handleBankSync = async () => {
+    setSyncingBank(true);
+    setBankSyncMessage("");
+    try {
+      const res = await api.post("/openbanking/sync", { bank_name: selectedBank }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      setBankSyncMessage(res.data.message);
+      fetchTransactions();
+      fetchBadges();
+      setTimeout(() => {
+        setShowBankModal(false);
+        setSyncingBank(false);
+        setBankSyncMessage("");
+      }, 2500);
+    } catch (err) {
+      setBankSyncMessage("Senkronizasyon hatası: " + (err.response?.data?.detail || err.message));
+      setSyncingBank(false);
+    }
+  };
 
   const dashboardRef = useRef();
   const navigate = useNavigate();
@@ -403,13 +430,11 @@ export default function Dashboard() {
     <div className="dashboard-page">
       <Navbar />
       <div className="app-container" ref={dashboardRef}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap", gap: "10px" }}>
           <h2 style={{ margin: 0 }}>Genel Bakış</h2>
-          {analysis && (
-            <button onClick={downloadPDF} className="secondary" style={{ width: "auto", marginTop: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-              <Download size={18} /> Rapor İndir
-            </button>
-          )}
+          <button onClick={() => setShowBankModal(true)} className="btn-small secondary" style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px", borderColor: "#22c55e", color: "#22c55e", background: "rgba(34,197,94,0.08)", padding: "0.6rem 1.25rem" }}>
+            <Building2 size={18} /> Banka Bağla (Açık Bankacılık)
+          </button>
         </div>
 
         {/* Ana Kartlar */}
@@ -465,7 +490,16 @@ export default function Dashboard() {
 
           {/* AI Analiz Bölümü */}
           <div className="glass-card">
-            <h3><BrainCircuit size={20} /> AI Analiz Merkezi</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "10px" }}>
+              <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                <BrainCircuit size={20} /> AI Analiz Merkezi
+              </h3>
+              {analysis && (
+                <button onClick={downloadPDF} className="btn-small secondary" style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px", borderColor: "#6366f1", color: "#6366f1", padding: "0.5rem 1rem", fontSize: "0.85rem" }}>
+                  <Download size={16} /> Rapor İndir
+                </button>
+              )}
+            </div>
             {!analysis ? (
               <div style={{ textAlign: "center", padding: "2rem" }}>
                 <button onClick={runAnalysis} disabled={loading}>
@@ -561,7 +595,7 @@ export default function Dashboard() {
 
         {/* Son İşlemler */}
         <div className="glass-card" style={{ marginTop: "2rem" }}>
-          <h3><Wallet size={20} /> Son İşlemler</h3>
+          <h3><Wallet size={10} /> Son İşlemler</h3>
           <div className="transaction-list">
             {transactions.slice().reverse().slice(0, 10).map((t) => (
               <div key={t.id} className="transaction-item">
@@ -729,7 +763,81 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Açık Bankacılık Banka Bağlama Modalı */}
+        {showBankModal && (
+          <div className="modal-overlay" style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: "1rem" }}>
+            <div className="glass-card modal-content" style={{ maxWidth: "500px", width: "100%", background: "#fff", padding: "2rem", borderRadius: "1.5rem", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "10px", color: "#1e293b", fontSize: "1.25rem" }}>
+                  <Building2 size={24} style={{ color: "#22c55e" }} /> Açık Bankacılık Senkronizasyonu
+                </h3>
+                <button onClick={() => setShowBankModal(false)} style={{ background: "transparent", color: "#64748b", border: "none", boxShadow: "none", width: "auto", padding: "5px", fontSize: "1.25rem", cursor: "pointer", marginTop: 0 }}>✕</button>
+              </div>
+
+              <p style={{ fontSize: "0.9rem", color: "#64748b", marginBottom: "1.5rem", lineHeight: "1.5" }}>
+                TCMB GEÇİT (Açık Bankacılık) altyapısı üzerinden bankanızdaki hesap hareketlerini tek tıkla FinTwin yapay zeka ikizinize aktarın.
+              </p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "1.5rem" }}>
+                {[
+                  { name: "Akbank", color: "#dc2626", bg: "rgba(220,38,38,0.1)" },
+                  { name: "Garanti BBVA", color: "#16a34a", bg: "rgba(22,163,74,0.1)" },
+                  { name: "İş Bankası", color: "#2563eb", bg: "rgba(37,99,235,0.1)" },
+                  { name: "Yapı Kredi", color: "#7c3aed", bg: "rgba(124,58,237,0.1)" }
+                ].map((b) => (
+                  <div
+                    key={b.name}
+                    onClick={() => setSelectedBank(b.name)}
+                    style={{
+                      padding: "1rem",
+                      borderRadius: "0.75rem",
+                      border: selectedBank === b.name ? `2px solid ${b.color}` : "1px solid rgba(0,0,0,0.1)",
+                      background: selectedBank === b.name ? b.bg : "#f8fafc",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      fontWeight: selectedBank === b.name ? "bold" : "normal",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    <div style={{ width: "16px", height: "16px", borderRadius: "50%", background: b.color }}></div>
+                    <span style={{ fontSize: "0.95rem", color: "#1e293b" }}>{b.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {bankSyncMessage && (
+                <div style={{ padding: "1rem", borderRadius: "0.75rem", background: bankSyncMessage.includes("hata") ? "rgba(239,68,68,0.1)" : "rgba(34,197,94,0.1)", color: bankSyncMessage.includes("hata") ? "#dc2626" : "#16a34a", fontSize: "0.9rem", marginBottom: "1.5rem", fontWeight: "500", textAlign: "center" }}>
+                  {bankSyncMessage}
+                </div>
+              )}
+
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                <button
+                  className="btn-inline"
+                  onClick={() => setShowBankModal(false)}
+                  style={{ background: "#e2e8f0", color: "#475569", boxShadow: "none", padding: "0.75rem 1.25rem" }}
+                >
+                  İptal
+                </button>
+                <button
+                  className="btn-inline"
+                  onClick={handleBankSync}
+                  disabled={syncingBank}
+                  style={{ background: "#22c55e", color: "#fff", padding: "0.75rem 1.5rem", display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  {syncingBank ? <RefreshCw size={18} className="spin" /> : <Building2 size={18} />}
+                  {syncingBank ? "Aktarılıyor..." : `${selectedBank} Bağla`}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
         .progress-bar {
           width: 100%;
           height: 6px;

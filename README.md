@@ -1,112 +1,98 @@
-# 🚀 FinTwin AI - Dijital Finansal İkiz ve Mentorluk Platformu
 
-![FinTwin AI Banner](https://img.shields.io/badge/Yapay_Zeka-Google_Gemini_Flash-6366f1?style=for-the-badge&logo=google) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi) ![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react) ![Docker](https://img.shields.io/badge/DevOps-Docker_Compose-2496ED?style=for-the-badge&logo=docker)
 
-**FinTwin AI**, kullanıcıların harcama ve gelir alışkanlıklarını analiz ederek onların **"Dijital Finansal İkizini" (Financial Twin)** oluşturan, harcama duygu durumunu saptayan ve yapay zeka destekli kişiselleştirilmiş finansal mentorluk sunan yeni nesil bir otonom finansal yönetim platformudur.
+# 🚀 FinTwin AI — Yapay Zeka Destekli Dijital Finansal İkiz ve Açık Bankacılık Platformu
 
----
+[![BTK Hackathon 2026](https://img.shields.io/badge/BTK_Hackathon-2026-6366f1?style=for-the-badge&logo=codeigniter)](https://github.com/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI_0.110-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/Frontend-React_18_%2B_Vite-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![Gemini AI](https://img.shields.io/badge/AI_Engine-Google_Gemini_Flash-8A2BE2?style=for-the-badge&logo=google)](https://ai.google.dev)
+[![Docker](https://img.shields.io/badge/Deployment-Docker_Compose-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com)
 
-## 🎯 Projenin Amacı ve Vizyonu
-
-Günümüz ekonomik koşullarında bireylerin finansal okuryazarlığını artırmak, bütçelerini doğru yönetmelerini sağlamak ve geleceğe yönelik sürdürülebilir birikim stratejileri oluşturmak hayati önem taşımaktadır. Ancak geleneksel bütçe takip uygulamaları sadece geçmiş verileri listelemekle yetinir.
-
-**FinTwin AI**, standart gelir-gider tablolarının ötesine geçerek şu temel sorunları çözer:
-- 💡 **Kişiselleştirilmiş Finansal Mentorluk Eksikliği:** Özel finansal danışmanlara erişimi olmayan bireyler için 7/24 hizmet veren yapay zeka destekli bir mentor sunar.
-- 🔍 **Alışkanlık ve Duygu Durumu Analizi:** Harcamaların arkasındaki psikolojiyi ve eğilimleri saptayarak kullanıcıya özel "Finansal Persona" tanımlar (Örn: *Dengeli Yatırımcı*, *Dürtüsel Harcayıcı*).
-- 🔮 **Gelecek Projeksiyonu:** Mevcut harcama hızı devam ederse 3 ay sonra bakiye ve borç durumunun ne olacağını önceden hesaplar ve uyarır.
+**FinTwin AI**, kullanıcıların finansal verilerini, gelir-gider alışkanlıklarını ve bütçe dengesini analiz ederek onlara yapay zeka destekli bir **"Dijital Finansal İkiz (Persona)"** çıkaran, oyunlaştırılmış ve TCMB Açık Bankacılık standartlarına uyumlu kişisel finansal yönetim platformudur.
 
 ---
 
-## ⚙️ Projenin İşleyişi ve Temel Mimarisi
+## 🌟 Öne Çıkan Özellikler (Hackathon Highlights)
 
+### 1. 🤖 Dijital Finansal İkiz & AI Analiz Merkezi (Gemini AI)
+* **Kişilik ve Ruh Hali Analizi (`Twin Mood`)**: İşlem geçmişinizi analiz ederek size özel finansal davranış profili (Örn: *Maaş Günü Riskli Harcayıcı*, *Dengeli Stratejist*) ve anlık ikiz ruh hali belirler.
+* **Akıllı İçgörüler ve Aksiyon Planı**: Finansal sağlığınızı optimize etmek için yapay zeka tarafından özel üretilen maddeli tavsiyeler ve 3 ay sonraki tahmini bakiye projeksiyonu.
+* **FinTwin Güven Skoru**: Harcamalarınızın sürdürülebilirliğine dayalı 0-100 arası finansal sağlık ve risk derecelendirmesi.
+
+### 2. 🏦 Açık Bankacılık Simülatörü (Open Banking Connect)
+* **TCMB / BKM GEÇİT Altyapı Uyumluluğu**: Sistem, kurum bağımsız hesap bilgisi sağlayıcısı (AISP) vizyonuyla tasarlanmıştır.
+* **Tek Tıkla Senkronizasyon**: Demo ortamında *Akbank, Garanti BBVA, İş Bankası ve Yapı Kredi* simülasyonlarıyla tek tıkla 8 adet güncel ve gerçekçi harcamayı anında hesabınıza aktarır ve Yapay Zeka İkizini besler.
+
+### 3. 🎯 Hedef Odaklı Akıllı Kumbara & AI İlerleyiş Takibi
+* Hayalinizdeki hedefleri (Örn: *MacBook Pro - 60.000 TL* veya *Yurtdışı Tatili - 35.000 TL*) sisteme ekleyin.
+* Yapay zeka arka planda aylık net tasarruf hızınızı hesaplayarak her hedefin altına özel bir tahmin ekler: *"Mevcut harcama hızınızla bu hedefe yaklaşık 4.5 ayda ulaşabilirsiniz."*
+* Dinamik ilerleme çubuğuyla (`progress-bar`) kumbaraya anlık para ekleyip hedeflerinizi tamamlayın.
+
+### 4. 🏆 Oyunlaştırma ve Başarı Rozetleri (Gamification)
+* Kullanıcıların bütçe disiplinini gerçek zamanlı takip eden dinamik rozet sistemi:
+  * 🛡️ **Tasarruf Şövalyesi**: Toplam gelir toplam gideri aştığında.
+  * ⚡ **Dürtü Avcısı**: Alışveriş harcamaları toplam giderin %25'inin altında kaldığında.
+  * 🌟 **Sıfır Borç Kulübü**: Net bakiye sıfırın üzerinde olduğunda.
+  * 🎯 **Hedef Uzmanı**: En az 1 aktif birikim hedefi oluşturulduğunda.
+  * 👑 **FinTwin Master**: 5'ten fazla işlem kaydedip AI asistanı beslendiğinde.
+
+### 5. 📑 Gelişmiş Filtreleme, Sıralama ve PDF Raporlama
+* **Geçmiş İşlemler Merkezi**: İki tarih aralığı (`startDate` & `endDate`) seçimi, kategori filtrelemesi, anlık metin araması ve kronolojik (En Yeni/En Eski) sıralama kombinasyonları.
+* **Rapor İndir (PDF Çıktısı)**: FinTwin analiz sonuçlarınızı, gelir-gider tablolarınızı ve bütçe dağılımınızı tek tıkla kurumsal ve düzenli bir PDF raporuna dönüştürür.
+
+---
+
+## 🏛️ Mimari ve Teknoloji Yığını
+
+```mermaid
+graph TD
+    A[React & Vite Frontend] <-->|JWT / JSON REST API| B(FastAPI Backend)
+    B <-->|SQLAlchemy / SQLModel| C[(SQLite / PostgreSQL)]
+    B <-->|Prompt Engineering| D[Google Gemini Flash AI]
+    A <-->|Open Banking Mock| E[TCMB GEÇİT Simülatörü]
 ```
-┌────────────────────────────────────────────────────────┐
-│                    KULLANICI (USER)                    │
-└───────────────────────────┬────────────────────────────┘
-                            │ İşlem Ekleme & Simülasyon
-┌───────────────────────────▼────────────────────────────┐
-│                  FRONTEND (React + Vite)               │
-│   (Glassmorphism UI, Recharts, Vektörel PDF Çıktısı)   │
-└───────────────────────────┬────────────────────────────┘
-                            │ REST API (JWT Auth)
-┌───────────────────────────▼────────────────────────────┐
-│                    BACKEND (FastAPI)                   │
-│   (SQLModel, Otomatik Hesaplamalar, Güvenli Uç Noktalar)│
-└───────────────────────────┬────────────────────────────┘
-                            │ Veri Analizi İstemi (Prompt)
-┌───────────────────────────▼────────────────────────────┐
-│                  GOOGLE GEMINI AI (LLM)                │
-│    (Persona, Duygu Durumu, İçgörü ve Aksiyon Planı)    │
-└────────────────────────────────────────────────────────┘
-```
 
-1. **Güvenli Katılım (JWT Auth):** Kullanıcı, şifresi güvenli bir şekilde (Bcrypt) hash'lenerek sisteme kayıt olur ve JWT Access Token ile doğrulanan korumalı oturumuna giriş yapar.
-2. **Veri Toplama:** Kullanıcı günlük gelir ve harcamalarını (Gıda, Yemek, Alışveriş, Abonelik, Konut vb.) sisteme işler.
-3. **Akıllı Analiz ve Gemini LLM Entegrasyonu:** Kullanıcı "Analiz Et" butonuna bastığında, arka plandaki FastAPI servisi tüm harcama örüntülerini, net bakiyeyi ve kategori yoğunluklarını bir prompt haline getirip Google Gemini yapay zeka modeline iletir.
-4. **Çıktı ve Strateji Üretimi:** Yapay zeka modeli kullanıcıya bir **Persona** (Örn: *Bilinçli Bütçe Yöneticisi*), bir **Duygu Durumu** (Örn: *Kontrollü & İyimser*), 0-100 arası bir **Risk Skoru**, **İçgörüler** ve nokta atışı bir **Aksiyon Planı** üretir.
-5. **What-If Simülatörü:** Kullanıcı belirli bir kategoride (Örn: Yemek veya Alışveriş) %20 kesinti yaparsa aylık/3 aylık ne kadar tasarruf edeceğini ve risk skorunun ne kadar düşeceğini anında simüle eder.
-6. **Kurumsal Vektörel PDF Raporlama:** Kullanıcı analiz sonuçlarını ve tüm tablolarını tek tıkla en yüksek kalitede, seçilebilir metin tabanlı ve tablolu profesyonel bir PDF raporu (`jsPDF` + `jspdf-autotable`) olarak indirir.
-
----
-
-## 🌟 Öne Çıkan Özellikler
-
-* 🧠 **Dijital İkiz ve Duygu Saptaması:** Sadece sayıları değil, kullanıcının o ayki harcama psikolojisini analiz eder.
-* 📈 **What-If (Ne Olurdu?) Simülatörü:** Harcama alışkanlıklarındaki ufak değişikliklerin uzun vadeli birikime etkisini anlık olarak hesaplar.
-* 📑 **%100 Vektörel PDF Rapor Çıktısı:** Ekran görüntüsü veya bulanık görseller yerine kurumsal standartlarda, yüksek kontrastlı ve dinamik tablolu finansal rapor üretir.
-* 🎨 **Premium Açık Tema (Light Theme) UI:** Modern cam efekti (glassmorphism), yumuşak gölgeler ve Recharts grafikleri ile büyüleyici ve ferah bir kullanıcı deneyimi sunar.
-* 🔒 **Hesap Yönetimi & Güvenlik:** Kullanıcı adı ve şifre değiştirme modülleri, token bazlı kesintisiz oturum yönetimi.
-
----
-
-## 🛠️ Teknoloji Yığını (Tech Stack)
-
-| Katman | Teknolojiler | Açıklama |
-| :--- | :--- | :--- |
-| **Yapay Zeka** | `Google Generative AI SDK (Gemini Flash)` | LLM tabanlı persona, içgörü ve tavsiye motoru |
-| **Backend** | `FastAPI`, `Python 3.11`, `SQLModel`, `Passlib`, `Jose (JWT)` | Yüksek performanslı asenkron REST API ve ORM katmanı |
-| **Veritabanı** | `PostgreSQL 15` (Docker) / `SQLite` (Lokal) | İlişkisel veritabanı altyapısı |
-| **Frontend** | `React 19`, `Vite`, `Recharts`, `Lucide Icons`, `jsPDF`, `jspdf-autotable` | SPA arayüz, veri görselleştirme ve vektörel raporlama |
-| **DevOps** | `Docker`, `Docker Compose`, `Nginx` | Multi-stage build ve ters vekil sunucu (Reverse Proxy) |
+* **Frontend**: React 18, Vite, Lucide-React İkonları, Recharts (Dinamik Grafikler), jsPDF & AutoTable (Raporlama).
+* **Backend**: Python 3.11, FastAPI, SQLModel (Pydantic + SQLAlchemy), Jose (JWT Kimlik Doğrulama), Google Generative AI (Gemini).
+* **Veritabanı**: SQLModel ORM (Geliştirme için SQLite, Docker canlı ortamı için PostgreSQL uyumlu).
+* **Dağıtım**: Tamamen Dockerize edilmiş altyapı (Docker Compose).
 
 ---
 
 ## 🚀 Kurulum ve Çalıştırma
 
-### 🐳 Docker Compose ile Hızlı Kurulum (Tavsiye Edilen)
-
-Proje tam donanımlı olarak Dockerize edilmiştir. Sisteminizde Docker ve Docker Compose yüklüyse tek komutla tüm ekosistemi (Veritabanı, Backend API ve Nginx Frontend) ayağa kaldırabilirsiniz:
+### 🐳 Docker ile Tek Komutla Kurulum (Tavsiye Edilen)
+Projedeki tüm servisleri (Veritabanı, Backend ve Frontend) tek komutla ayağa kaldırabilirsiniz:
 
 ```bash
 docker compose up --build -d
 ```
 
-- **Frontend Canlı Uygulama**: [http://localhost:3000](http://localhost:3000)
-- **Backend API ve Swagger Dokümantasyonu**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* 🌐 **Frontend Web Arayüzü**: [http://localhost:3000](http://localhost:3000)
+* ⚙️ **Backend API & Swagger Dokümantasyonu**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Sistemi durdurmak için:
+Konteynerleri durdurmak ve temizlemek için:
 ```bash
 docker compose down
 ```
 
 ---
 
-### 💻 Manuel Geliştirme Ortamı Kurulumu
+### 💻 Manuel Geliştirici Ortamı Kurulumu
 
 #### 1. Backend Kurulumu
-Python 3.9+ gereklidir.
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows için: venv\Scripts\activate
+source venv/bin/activate  # (Windows için: venv\Scripts\activate)
 pip install -r requirements.txt
 ```
-`.env` dosyasını oluşturun ve Gemini API anahtarınızı ekleyin:
+Backend dizininde bir `.env` dosyası oluşturun ve Gemini API anahtarınızı ekleyin:
 ```env
-GEMINI_API_KEY=senin_api_anahtarin
+GEMINI_API_KEY=your_google_gemini_api_key
+DATABASE_URL=sqlite:///./fintwin.db
 SECRET_KEY=super_gizli_anahtar
 ```
-Sunucuyu başlatın:
 ```bash
 uvicorn main:app --reload
 ```

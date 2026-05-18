@@ -60,6 +60,9 @@ class Badge(SQLModel):
     earned: bool
     color: str
 
+class OpenBankingSync(SQLModel):
+    bank_name: str
+
 class Token(SQLModel):
     access_token: str
     token_type: str

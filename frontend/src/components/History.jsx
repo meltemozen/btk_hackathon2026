@@ -7,6 +7,9 @@ export default function History() {
   const [transactions, setTransactions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("Tümü");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -39,30 +42,39 @@ export default function History() {
   const filteredTransactions = transactions.filter(t => {
     const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === "Tümü" || t.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  }).reverse();
+
+    const txDate = new Date(t.date).toISOString().split('T')[0];
+    const matchesStartDate = !startDate || txDate >= startDate;
+    const matchesEndDate = !endDate || txDate <= endDate;
+
+    return matchesSearch && matchesCategory && matchesStartDate && matchesEndDate;
+  }).sort((a, b) => {
+    const timeA = new Date(a.date).getTime();
+    const timeB = new Date(b.date).getTime();
+    return sortOrder === "newest" ? timeB - timeA : timeA - timeB;
+  });
 
   return (
     <div>
       <Navbar />
       <div className="app-container">
         <div className="glass-card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
-            <h2>Geçmiş İşlemler</h2>
-            <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem", flexWrap: "wrap", gap: "15px" }}>
+            <h2 style={{ margin: 0 }}>Geçmiş İşlemler</h2>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ position: "relative" }}>
-                <Search size={16} style={{ position: "absolute", left: "10px", top: "12px", color: "#94a3b8" }} />
-                <input 
-                  placeholder="İşlem ara..." 
-                  style={{ paddingLeft: "35px", width: "200px" }}
+                <Search size={16} style={{ position: "absolute", right: "10px", top: "10px", color: "#94a3b8" }} />
+                <input
+                  placeholder="İşlem ara..."
+                  style={{ paddingLeft: "35px", width: "180px", padding: "0.65rem 1rem", fontSize: "0.85rem" }}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <select 
-                value={filterCategory} 
+              <select
+                value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                style={{ width: "150px" }}
+                style={{ width: "140px", padding: "0.65rem 1rem", fontSize: "0.85rem" }}
               >
                 <option>Tümü</option>
                 <option>Gelir</option>
@@ -74,6 +86,33 @@ export default function History() {
                 <option>Kafe</option>
                 <option>Ulaşım</option>
                 <option>Diğer</option>
+              </select>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  title="Başlangıç Tarihi"
+                  style={{ width: "135px", padding: "0.65rem 0.5rem", fontSize: "0.85rem" }}
+                />
+                <span style={{ color: "#64748b", fontWeight: "bold" }}>-</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  title="Bitiş Tarihi"
+                  style={{ width: "135px", padding: "0.65rem 0.5rem", fontSize: "0.85rem" }}
+                />
+              </div>
+
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                style={{ width: "135px", padding: "0.65rem 1rem", fontSize: "0.85rem", background: "rgba(99,102,241,0.08)", color: "#6366f1", borderColor: "#6366f1", fontWeight: "600" }}
+              >
+                <option value="newest">En Yeniler</option>
+                <option value="oldest">En Eskiler</option>
               </select>
             </div>
           </div>
@@ -97,8 +136,8 @@ export default function History() {
                   <p style={{ fontWeight: 700, color: t.amount > 0 ? "#16a34a" : "#dc2626" }}>
                     {t.amount > 0 ? "+" : ""}{t.amount} TL
                   </p>
-                  <button 
-                    onClick={() => deleteTransaction(t.id)} 
+                  <button
+                    onClick={() => deleteTransaction(t.id)}
                     style={{ background: "transparent", border: "none", color: "#dc2626", cursor: "pointer", padding: "5px", marginTop: 0, boxShadow: "none" }}
                     title="Sil"
                   >
