@@ -1,7 +1,5 @@
 # 🚀 FinTwin AI - Dijital Finansal İkiz ve Mentorluk Platformu
 
-![FinTwin AI Banner](https://img.shields.io/badge/Yapay_Zeka-Google_Gemini_Flash-6366f1?style=for-the-badge&logo=google) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi) ![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react) ![Docker](https://img.shields.io/badge/DevOps-Docker_Compose-2496ED?style=for-the-badge&logo=docker)
-
 **FinTwin AI**, kullanıcıların harcama ve gelir alışkanlıklarını analiz ederek onların **"Dijital Finansal İkizini" (Financial Twin)** oluşturan, harcama duygu durumunu saptayan ve yapay zeka destekli kişiselleştirilmiş finansal mentorluk sunan yeni nesil bir otonom finansal yönetim platformudur.
 
 ---
