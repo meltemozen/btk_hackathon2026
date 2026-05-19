@@ -6,7 +6,7 @@
 
 ---
 
-## 🌟 Öne Çıkan Özellikler (Hackathon Highlights)
+## 🌟 Özellikler
 
 ### 1. 🤖 Dijital Finansal İkiz & AI Analiz Merkezi (Gemini AI)
 * **Kişilik ve Ruh Hali Analizi (`Twin Mood`)**: İşlem geçmişinizi analiz ederek size özel finansal davranış profili (Örn: *Maaş Günü Riskli Harcayıcı*, *Dengeli Stratejist*) ve anlık ikiz ruh hali belirler.
@@ -22,7 +22,7 @@
 * Yapay zeka arka planda aylık net tasarruf hızınızı hesaplayarak her hedefin altına özel bir tahmin ekler: *"Mevcut harcama hızınızla bu hedefe yaklaşık 4.5 ayda ulaşabilirsiniz."*
 * Dinamik ilerleme çubuğuyla (`progress-bar`) kumbaraya anlık para ekleyip hedeflerinizi tamamlayın.
 
-### 4. 🏆 Oyunlaştırma ve Başarı Rozetleri (Gamification)
+### 4. 🏆 Başarı Rozetleri
 * Kullanıcıların bütçe disiplinini gerçek zamanlı takip eden dinamik rozet sistemi:
   * 🛡️ **Tasarruf Şövalyesi**: Toplam gelir toplam gideri aştığında.
   * ⚡ **Dürtü Avcısı**: Alışveriş harcamaları toplam giderin %25'inin altında kaldığında.
